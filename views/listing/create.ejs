@@ -1,0 +1,47 @@
+<% layout("/layouts/boilerplate")-%>
+<body>
+    <div class="row color-black">
+        <div class="col-6 offset-2">
+    <h2>create new listing</h2> 
+     <br>
+    <form action="listings" method="post" class="needs-validation" novalidate> 
+    <div class="mb-3">
+        <label for="title" class="form-label">title</label>
+        <input type="text" name="listing[title]" placeholder="add a catcy title" class="form-control" required>
+        <div class="invalid-feedback">title is required</div>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">description</label>
+        <textarea name="listing[description]" class="form-control" required></textarea>
+        <div class="invalid-feedback">description should be good</div>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">image</label>
+        <input type="text" name="listing[image]" placeholder="image url" required class="form-control">
+        
+
+    </div>
+    <div class="row ">
+    <div class="mb-3 col-md-4">
+        <label for="price" class="form-label">price</label>
+        <input class="form-control" type="text" name="listing[price]" required placeholder="1200">
+        <div class="invalid-feedback">please enter the valid price tag</div>
+
+    </div>
+    <div class="mb-3 col-md-8">
+        <label for="location" class="form-label">location</label>
+        <input type="text" name="listing[location]" class="form-control" required placeholder="isalmabad, karachi">
+        <div class="invalid-feedback">please enter the location</div>
+
+    </div>
+</div>
+    <div class="mb-3">
+         <label for="country" class="form-label"></label>
+        <input type="text" name="listing[country]" class="form-control" required placeholder="pakistan">
+        <div class="invalid-feedback">this field is required</div>
+    </div>
+        <button class="btn btn-dark add-btn">add</button>
+    </form>
+</div>
+</div>
+</body>

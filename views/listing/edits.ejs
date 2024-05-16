@@ -1,0 +1,48 @@
+<% layout("/layouts/boilerplate")  -%>
+
+    <h2>Edit new listing</h2>
+    <div class="row">
+        <div class="col-6 offset-2">
+        
+    <form method="post" action="/listing/<%=list.id %>?_method=put" class="needs-validation" novalidate>
+    
+    <div class="mb-3">
+        <label for="title" class="form-label">title</label>
+        <input type="text" name="listing[title]" value="<%=list.title%>" class="form-control" required>
+        <div class="invalid-feedback"> title should be attractive</div>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">description</label>
+        <textarea name="listing[description]" class="form-control" required><%=list.description %></textarea>
+        <div class="invalid-feedback">description should be good</div>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">image url</label>
+        <input type="text" name="listing[image]" value="<%=list.image%>" class="form-control" required>
+        <div class="invalid-feedback">image shoould in HD</div>
+    </div>
+    <div class="row">
+    <div class="mb-3 col-md-4">
+        <label for="price" class="form-label"> price </label>
+        <input type="number" name="listing[price]" value="<%=list.price%>" class="form-control"  required>
+        <div class="invalid-feedback">please  enter the good price</div>
+    </div>
+    <div class="mb-3 col-md-8">
+        <label for="location" class="form-label">location</label>
+        <input type="text" name="listing[location]" value="<%=list.location%>"  class="form-control"  required>
+        <div class="invalid-feedback">please enter the valid location</div>
+    </div>
+</div>
+    <div class="mb-3">
+        <label for="country" class="form-label">country</label>
+        <input type="text" name="listing[country]" value="<%=list.country%>" class="form-control" required>
+        <div class="invalid-feedback">this field is required</div>
+    </div>
+
+        <button class="btn btn-dark add-btn">edits</button>
+
+    </form>
+</div>
+</div>
+<script src="/javascriptcode/script.js"></script>
+
