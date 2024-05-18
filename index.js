@@ -95,10 +95,7 @@ app.delete("/delete/:id",wrapasync( async(req, res) => {
     res.redirect("/listing");
 
 }));
-//for all that page is not found
-app.all("*", (req, res, next) => {
-    next(new ExpressError(444, "page not found"));
-})
+
 
 //for to handle the error
 app.use((err, req, res, next) => {
@@ -120,6 +117,9 @@ app.post("/listing/:id/reviews", async()=> {
 
 });
 
-
+//for all that page is not found
+app.all("*", (req, res, next) => {
+    next(new ExpressError(444, "page not found"));
+})
 
 app.listen(8080);
