@@ -105,16 +105,15 @@ app.use((err, req, res, next) => {
 });
 
 //reviews 
-//to post the review
-app.post("/listing/:id/reviews", async()=> {
- let listing =  await listing.findById(req.params.id);
+//to post the review 
+app.post("/listing/:id/reviews", async(req, res)=> {
+ let listings =  await listing.findById(req.params.id);
  let newreview = new Review(req.body.review);
 
- listing.reviews.push(newreview);
+ listings.reviews.push(newreview);
  await newreview.save();
- await listing.save();
- res.send("you review is saved");
-
+ await listings.save();
+res.redirect(`/listing/${listings._id}`);
 });
 
 //for all that page is not found
