@@ -7,7 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapasync = require("./utills/wrapaysnc.js");
 const ExpressError = require("./utills/expresserror.js");
-const {listingSchema} = require("./joi.js");
+const {listingSchema, reviewSchema} = require("./joi.js");
 const Review = require("./models/review.js");
 
 
@@ -35,7 +35,18 @@ app.get("/", (req, res) => {
 
 //to check the error
 const validateListing = (req, res, next) => {
-    let {error} = listingSchema.validate(req.body)
+    let {error} = listingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, error);
+    }else{
+        next();
+    }
+
+}
+//to the validate the seversite review and send the feedback
+const validatereview = (req, res, next) => {
+    let {error} = reviewSchema.validate(req.body);
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, error);
@@ -59,7 +70,7 @@ app.get("/listing/new",wrapasync( async(req, res) => {
 app.get("/listing/:id",wrapasync( async (req, res) => {
  
         let {id} = req.params;
-        const list = await listing.findById(id);
+        const list = await listing.findById(id).populate("review");
         res.render("show.ejs", {list});
 }));
 
@@ -106,7 +117,7 @@ app.use((err, req, res, next) => {
 
 //reviews 
 //to post the review 
-app.post("/listing/:id/reviews", async(req, res)=> {
+app.post("/listing/:id/reviews", validatereview,wrapasync( async(req, res)=> {
  let listings =  await listing.findById(req.params.id);
  let newreview = new Review(req.body.review);
 
@@ -114,7 +125,7 @@ app.post("/listing/:id/reviews", async(req, res)=> {
  await newreview.save();
  await listings.save();
 res.redirect(`/listing/${listings._id}`);
-});
+}));
 
 //for all that page is not found
 app.all("*", (req, res, next) => {
