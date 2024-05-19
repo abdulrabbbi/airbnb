@@ -70,7 +70,7 @@ app.get("/listing/new",wrapasync( async(req, res) => {
 app.get("/listing/:id",wrapasync( async (req, res) => {
  
         let {id} = req.params;
-        const list = await listing.findById(id).populate("review");
+        const list = await listing.findById(id);
         res.render("show.ejs", {list});
 }));
 
@@ -116,16 +116,21 @@ app.use((err, req, res, next) => {
 });
 
 //reviews 
-//to post the review 
-app.post("/listing/:id/reviews", validatereview,wrapasync( async(req, res)=> {
+// to post the review 
+app.post("/listing/:id/reviews", validatereview, wrapasync( async(req, res)=> {
  let listings =  await listing.findById(req.params.id);
- let newreview = new Review(req.body.review);
+ let newreview = new Review(req.body.reviews);
 
  listings.reviews.push(newreview);
- await newreview.save();
- await listings.save();
-res.redirect(`/listing/${listings._id}`);
+await newreview.save();
+await listings.save();
+// console.log(kahn);
+// console.log(result);
+res.send("hello you data is saved");
+
 }));
+// this is for chat gpt to save the revew
+
 
 //for all that page is not found
 app.all("*", (req, res, next) => {
