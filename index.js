@@ -70,7 +70,7 @@ app.get("/listing/new",wrapasync( async(req, res) => {
 app.get("/listing/:id",wrapasync( async (req, res) => {
  
         let {id} = req.params;
-        const list = await listing.findById(id);
+        const list = await listing.findById(id).populate("reviews");
         res.render("show.ejs", {list});
 }));
 
@@ -117,19 +117,40 @@ app.use((err, req, res, next) => {
 
 //reviews 
 // to post the review 
-app.post("/listing/:id/reviews", validatereview, wrapasync( async(req, res)=> {
- let listings =  await listing.findById(req.params.id);
- let newreview = new Review(req.body.reviews);
+app.post("/listing/:id/reviews",validatereview,wrapasync(async(req, res)=> {
+    let listings =  await listing.findById(req.params.id);
+    let newreview = new Review(req.body.reviews);
+   
+    listings.reviews.push(newreview);
+   await newreview.save();
+   await listings.save();
+   // console.log(kahn);
+   // console.log(result);
+   res.redirect(`/listing/${listings._id}`);
+   
+   }));
 
- listings.reviews.push(newreview);
-await newreview.save();
-await listings.save();
-// console.log(kahn);
-// console.log(result);
-res.send("hello you data is saved");
+//to delete the review
+app.delete("/listing/:id/reviews/:reviewId", wrapasync(async(req, res) => {
+    let {id, reviewId} = req.params;
+    await listing.findOneAndDelete(id, {$pull: {reviews: reviewId}});
+    await Review.findOneAndDelete(reviewId);
 
-}));
-// this is for chat gpt to save the revew
+    res.redirect(`/listing/${id}`);
+  
+
+})); 
+
+
+
+
+
+
+
+
+
+
+
 
 
 //for all that page is not found
