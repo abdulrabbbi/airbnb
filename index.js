@@ -38,7 +38,7 @@ const validateListing = (req, res, next) => {
     let {error} = listingSchema.validate(req.body);
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, error);
+        throw new ExpressError(400, errMsg);
     }else{
         next();
     }
@@ -49,7 +49,7 @@ const validatereview = (req, res, next) => {
     let {error} = reviewSchema.validate(req.body);
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, error);
+        throw new ExpressError(400, errMsg);
     }else{
         next();
     }
@@ -117,7 +117,7 @@ app.use((err, req, res, next) => {
 
 //reviews 
 // to post the review 
-app.post("/listing/:id/reviews",validatereview,wrapasync(async(req, res)=> {
+app.post("/listing/:id/reviews", wrapasync(async(req, res)=> {
     let listings =  await listing.findById(req.params.id);
     let newreview = new Review(req.body.reviews);
    
