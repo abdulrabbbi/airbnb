@@ -9,7 +9,7 @@ const wrapasync = require("./utills/wrapaysnc.js");
 const ExpressError = require("./utills/expresserror.js");
 const {listingSchema, reviewSchema} = require("./joi.js");
 const Review = require("./models/review.js");
-
+const listings = require("./route/listing.js");
 
 
 app.set("view engine", "ejs");
@@ -33,17 +33,7 @@ app.get("/", (req, res) => {
     res.send("hello all you fucking friends");
 });
 
-//to check the error
-const validateListing = (req, res, next) => {
-    let {error} = listingSchema.validate(req.body);
-    if(error){
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }else{
-        next();
-    }
 
-}
 //to the validate the seversite review and send the feedback
 const validatereview = (req, res, next) => {
     let {error} = reviewSchema.validate(req.body);
@@ -56,57 +46,7 @@ const validatereview = (req, res, next) => {
 
 }
 
-// show the listing
-app.get("/listing",wrapasync( async(req, res) => {
-    const alllists = await listing.find();
-    res.render("listing/index.ejs", {alllists});
-}));
-//created the new listing
-app.get("/listing/new",wrapasync( async(req, res) => {
-    res.render("listing/create.ejs");
-}));
-
-// show route
-app.get("/listing/:id",wrapasync( async (req, res) => {
- 
-        let {id} = req.params;
-        const list = await listing.findById(id).populate("reviews");
-        res.render("show.ejs", {list});
-}));
-
-// post the new listing
-app.post("/listing/listings",validateListing, wrapasync(async(req, res, next) => {
-        const newlist = new listing(req.body.listing);
-        await newlist.save();
-        res.redirect("/listing");
-    
-    
-})) ;
-
-//edit the listing
-app.get("/listing/:id/edit",validateListing, wrapasync(async (req, res) => {
-    let {id} = req.params;
-    const list = await listing.findById(id);
-    res.render("listing/edits.ejs", {list});
-}));
-
-//to update the data
-app.put("/listing/:id",wrapasync( async(req, res) => {
-    let {id} = req.params;
-    await listing.findByIdAndUpdate(id, {...req.body.listing});
-    res.redirect("/listing");
-
-}));
-
-//delete the listing
-app.delete("/delete/:id",wrapasync( async(req, res) => {
-    let {id} = req.params;
-   const dellisting =  await listing.findByIdAndDelete(id);
-   console.log(dellisting);
-    res.redirect("/listing");
-
-}));
-
+app.use("/listing", listings);
 
 //for to handle the error
 app.use((err, req, res, next) => {
