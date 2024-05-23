@@ -1,16 +1,12 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const listing = require("./models/listing");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapasync = require("./utills/wrapaysnc.js");
 const ExpressError = require("./utills/expresserror.js");
-const {listingSchema, reviewSchema} = require("./joi.js");
-const Review = require("./models/review.js");
 const listings = require("./route/listing.js");
-
+const reviews = require("./route/reviews.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -34,19 +30,12 @@ app.get("/", (req, res) => {
 });
 
 
-//to the validate the seversite review and send the feedback
-const validatereview = (req, res, next) => {
-    let {error} = reviewSchema.validate(req.body);
-    if(error){
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }else{
-        next();
-    }
-
-}
 
 app.use("/listing", listings);
+app.use("/listing/:id/reviews", reviews);
+
+
+
 
 //for to handle the error
 app.use((err, req, res, next) => {
@@ -54,44 +43,6 @@ app.use((err, req, res, next) => {
    res.render("error.ejs", {message});
 
 });
-
-//reviews 
-// to post the review 
-app.post("/listing/:id/reviews", wrapasync(async(req, res)=> {
-    let listings =  await listing.findById(req.params.id);
-    let newreview = new Review(req.body.reviews);
-   
-    listings.reviews.push(newreview);
-   await newreview.save();
-   await listings.save();
-   // console.log(kahn);
-   // console.log(result);
-   res.redirect(`/listing/${listings._id}`);
-   
-   }));
-
-//to delete the review
-app.delete("/listing/:id/reviews/:reviewId", wrapasync(async(req, res) => {
-    let {id, reviewId} = req.params;
-    await listing.findOneAndDelete(id, {$pull: {reviews: reviewId}});
-    await Review.findOneAndDelete(reviewId);
-
-    res.redirect(`/listing/${id}`);
-  
-
-})); 
-
-
-
-
-
-
-
-
-
-
-
-
 
 //for all that page is not found
 app.all("*", (req, res, next) => {
