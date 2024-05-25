@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express();
 const wrapasync = require("../utills/wrapaysnc.js");
-const {listingSchema, reviewSchema} = require("../joi.js");
+const {listingSchema} = require("../joi.js");
 const ExpressError = require("../utills/expresserror.js");
 const listing = require("../models/listing");
 

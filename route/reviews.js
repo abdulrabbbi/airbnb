@@ -1,8 +1,8 @@
 const express = require("express");
-const router = express();
+const router = express.Router({mergeParams: true});
 const ExpressError = require("../utills/expresserror.js");
 const wrapasync = require("../utills/wrapaysnc.js");
-const {listingSchema, reviewSchema} = require("../joi.js");
+const { reviewSchema} = require("../joi.js");
 const Review = require("../models/review.js");
 const listing = require("../models/listing");
 
@@ -44,7 +44,7 @@ const validatereview = (req, res, next) => {
         next();
     }
 
-}
+};
 
 
 module.exports = router;

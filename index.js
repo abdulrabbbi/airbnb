@@ -7,7 +7,20 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utills/expresserror.js");
 const listings = require("./route/listing.js");
 const reviews = require("./route/reviews.js");
+const session = require("express-session");
 
+const sessionOption = {
+    secret : "mysupersecretcode",
+    resave: false,
+    saveUninitialized : true,
+    cookies:{
+      expries: Date.now()* 7 * 24 * 60 * 1000,
+      maxAge : 1000 * 60 * 24 * 7,
+      httpOnly : true
+    }
+}
+
+app.use(session(sessionOption))
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
