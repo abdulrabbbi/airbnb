@@ -4,6 +4,16 @@ const wrapasync = require("../utills/wrapaysnc.js");
 const {listingSchema} = require("../joi.js");
 const ExpressError = require("../utills/expresserror.js");
 const listing = require("../models/listing");
+const methodOverride = require("method-override");
+
+router.use(methodOverride('_method'));
+
+//for to flash the message
+router.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
 
 //to check the error
 const validateListing = (req, res, next) => {
@@ -34,6 +44,10 @@ router.get("/:id",wrapasync( async (req, res) => {
  
         let {id} = req.params;
         const list = await listing.findById(id).populate("reviews");
+        if(!list){
+            req.flash("error", "the listing you are seaching is not exist");
+            res.render("/listing");
+        }
         res.render("show.ejs", {list});
 }));
 
@@ -41,6 +55,7 @@ router.get("/:id",wrapasync( async (req, res) => {
 router.post("/listings", wrapasync(async(req, res, next) => {
         const newlist = new listing(req.body.listing);
         await newlist.save();
+        req.flash("success", "your Listing is created succesfully!!");
         res.redirect("/listing");
     
     
@@ -50,6 +65,7 @@ router.post("/listings", wrapasync(async(req, res, next) => {
 router.get("/:id/edit", wrapasync(async (req, res) => {
     let {id} = req.params;
     const list = await listing.findById(id);
+    
     res.render("listing/edits.ejs", {list});
 }));
 
@@ -57,6 +73,7 @@ router.get("/:id/edit", wrapasync(async (req, res) => {
 router.put("/:id",wrapasync( async(req, res) => {
     let {id} = req.params;
     await listing.findByIdAndUpdate(id, {...req.body.listing});
+    req.flash("success", "your Listing is updated succesfully!!");
     res.redirect("/listing");
 
 }));
@@ -66,6 +83,7 @@ router.delete("/delete/:id",wrapasync( async(req, res) => {
     let {id} = req.params;
    const dellisting =  await listing.findByIdAndDelete(id);
    console.log(dellisting);
+   req.flash("success", "your Listing is deleted succesfully!!");
     res.redirect("/listing");
 
 }));

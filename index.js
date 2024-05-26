@@ -8,6 +8,7 @@ const ExpressError = require("./utills/expresserror.js");
 const listings = require("./route/listing.js");
 const reviews = require("./route/reviews.js");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const sessionOption = {
     secret : "mysupersecretcode",
@@ -19,8 +20,9 @@ const sessionOption = {
       httpOnly : true
     }
 }
-
-app.use(session(sessionOption))
+// middle-ware
+app.use(session(sessionOption));
+app.use(flash());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));

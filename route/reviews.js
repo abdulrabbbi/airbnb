@@ -15,8 +15,8 @@ router.post("/", wrapasync(async(req, res)=> {
     listings.reviews.push(newreview);
    await newreview.save();
    await listings.save();
-   // console.log(kahn);
-   // console.log(result);
+ 
+   req.flash("success", "your review is created succesfully!!");
    res.redirect(`/listing/${listings._id}`);
    
    }));
